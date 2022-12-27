@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+
+    <x:String x:Key="IconImportChat">&#xf234;</x:String>
+    <x:String x:Key="IconDeleteChat">&#xf2ed;</x:String>
+
+    <Style x:Key="h1" TargetType="Label">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="Margin" Value="0,5"/>
+        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style x:Key="h2" TargetType="Label">
+        <Setter Property="FontSize" Value="19"/>
+        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource Textblock}"/>
+    </Style>
+
+    <Style TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource BackgroundPrimary}"/>
+        <Setter Property="TextColor" Value="{StaticResource Secondary}"/>
+        <Setter Property="BorderWidth" Value="1"/>
+        <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
+    </Style>
+
+    <Style TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource Secondary}"/>
+    </Style>
+    
+</ResourceDictionary>
