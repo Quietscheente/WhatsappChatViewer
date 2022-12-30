@@ -12,6 +12,7 @@
 
     <Color x:Key="Textblock">#444444</Color>
     <Color x:Key="Error">#E9806E</Color>
+    <Color x:Key="Hyperlink">#2B0B98</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
 

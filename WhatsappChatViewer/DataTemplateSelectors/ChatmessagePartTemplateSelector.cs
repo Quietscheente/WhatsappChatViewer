@@ -10,6 +10,7 @@ namespace WhatsappChatViewer.DataTemplateSelectors;
 public class ChatmessagePartTemplateSelector : DataTemplateSelector
 {
     public DataTemplate TextTemplate { get; set; } = null!;
+    public DataTemplate UrlTemplate { get; set; } = null!;
     public DataTemplate ImageTemplate { get; set; } = null!;
 
     protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -18,6 +19,7 @@ public class ChatmessagePartTemplateSelector : DataTemplateSelector
         {
             ImageChatmessagePart => ImageTemplate,
             TextChatmessagePart => TextTemplate,
+            UrlChatmessagePart => UrlTemplate,
             _ => throw new NotImplementedException()
         };
     }

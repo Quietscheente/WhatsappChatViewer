@@ -48,7 +48,7 @@ public class Chat
             if (matchAttachment.Success)
             {
                 string filename = matchAttachment.Groups[1].Value;
-                if (Path.GetExtension(filename) == ".jpg" && File.Exists(Path.Combine(Directory, filename)))
+                if (Path.GetExtension(filename) is ".jpg" or ".webp" && File.Exists(Path.Combine(Directory, filename)))
                 {
                     imageSource = ImageSource.FromFile(Path.Combine(Directory, filename));
                     message.Parts.Add(new ImageChatmessagePart(imageSource));
@@ -56,7 +56,30 @@ public class Chat
             }
 
             if (imageSource is null)
-                message.Parts.Add(new TextChatmessagePart(content));
+            {
+                var urlPattern = new Regex(@"(.*?)((?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$]))", RegexOptions.IgnoreCase);
+                var urlMatches = urlPattern.Matches(content);
+                if (urlMatches.Any())
+                {
+                    for (int i = 0; i < urlMatches.Count; i++)
+                    {
+                        if (urlMatches[i].Groups[1].Length > 0)
+                            message.Parts.Add(new TextChatmessagePart(urlMatches[i].Groups[1].Value.Trim()));
+
+                        message.Parts.Add(new UrlChatmessagePart(urlMatches[i].Groups[2].Value.Trim()));
+
+                        if (i == urlMatches.Count - 1)
+                        {
+                            string remainingText = content[(urlMatches[i].Groups[2].Index + urlMatches[i].Groups[2].Length)..];
+                            if (remainingText.Trim().Length > 0)
+                                message.Parts.Add(new TextChatmessagePart(remainingText.Trim()));
+                        }
+                        
+                    }
+                }
+                else
+                    message.Parts.Add(new TextChatmessagePart(content));
+            }
 
             if (message != lastMessage)
             {

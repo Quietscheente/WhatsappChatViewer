@@ -21,9 +21,18 @@
             <Label Text="{Binding Text}"/>
         </DataTemplate>
 
+        <DataTemplate x:Key="UrlChatMessagePartTemplate" x:DataType="models:UrlChatmessagePart">
+            <Label Text="{Binding Url}" TextDecorations="Underline" TextColor="{StaticResource Hyperlink}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenUrlCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </DataTemplate>
+
         <templateselectors:ChatmessagePartTemplateSelector x:Key="chatmessageTemplateSelector"
                                           ImageTemplate="{StaticResource ImageChatMessagePartTemplate}"
-                                          TextTemplate="{StaticResource TextChatMessagePartTemplate}"/>
+                                          TextTemplate="{StaticResource TextChatMessagePartTemplate}"
+                                          UrlTemplate="{StaticResource UrlChatMessagePartTemplate}"/>
     </ContentPage.Resources>
 
     <Grid BackgroundColor="{StaticResource BackgroundSecondary}">
