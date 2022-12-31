@@ -9,14 +9,12 @@ namespace WhatsappChatViewer.Models;
 
 public class Chatmessage
 {
-    public string Date { get; }
-    public string Time { get; }
+    public DateTime DateTime { get; }
     public string? From { get; }
 
-    public Chatmessage(string date, string time, string? from)
+    public Chatmessage(DateTime dateTime, string? from)
     {
-        Date = date;
-        Time = time;
+        DateTime = dateTime;
         From = from;
     }
 

@@ -70,7 +70,8 @@ public class ChatImporter
             chatName = chatName.Replace("WhatsApp Chat - ", "");
 
             yield return new Chat(chatName, chatDir, 
-                new(() => File.ReadLines(chatDir + @"/_chat.txt").Reverse()));
+                new MessageSplitter(
+                    new Lazy<IEnumerable<string>>(() => File.ReadLines(Path.Combine(chatDir, "_chat.txt")))));
         }
     }
 

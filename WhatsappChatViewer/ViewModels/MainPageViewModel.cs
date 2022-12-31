@@ -35,7 +35,7 @@ public class MainPageViewModel : INotifyPropertyChanged
 
     public MainPageViewModel(ChatImporter chatImporter, UiMessageLogger messageLogger)
     {
-        ImportChatCommand = new Command(async () => await ImportChat(), () => !IsImportingChat);
+        ImportChatCommand = new Command(async () => await ImportChatAsync(), () => !IsImportingChat);
         ChatSelectedCommand = new Command(ChatSelected);
         UnselectChatCommand = new Command(UnselectChat);
 
@@ -64,7 +64,7 @@ public class MainPageViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new(nameof(SelectedChatViewModel)));
     }
 
-    private async Task ImportChat()
+    private async Task ImportChatAsync()
     {
         var result = await FilePicker.PickAsync();
 
