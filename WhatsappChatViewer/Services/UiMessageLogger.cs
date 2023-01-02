@@ -23,7 +23,7 @@ public class UiMessageLogger
         this.mainPage = mainPage;
     }
 
-    public async void ShowMessage(string text, UiMessageType messageType)
+    public async void ShowMessage(string text, UiMessageType messageType, int delay=0)
     {
         Color background = (Color)Util.GetResource("BackgroundPrimary");
         Color textColor = (Color)Util.GetResource("Secondary");
@@ -36,7 +36,7 @@ public class UiMessageLogger
             
         };
 
-        await Task.Delay(500);
-        await mainPage.Value.DisplaySnackbar(text, duration: TimeSpan.FromSeconds(5), visualOptions: options);
+        await Task.Delay(delay);
+        await mainPage.Value.DisplaySnackbar(text, duration: TimeSpan.FromSeconds(8), visualOptions: options);
     }
 }

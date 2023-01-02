@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:WhatsappChatViewer.ViewModels"
+             xmlns:converters="clr-namespace:WhatsappChatViewer.ValueConverters"
+             xmlns:models="clr-namespace:WhatsappChatViewer.Models"
+             xmlns:templateselectors="clr-namespace:WhatsappChatViewer.DataTemplateSelectors"
+             x:Class="WhatsappChatViewer.Views.ChatView"
+             x:DataType="viewmodels:MainPageViewModel">
+
+    <ContentView.Resources>
+        <DataTemplate x:Key="ImageChatMessagePartTemplate" x:DataType="models:ImageChatmessagePart">
+            <Grid HorizontalOptions="Center">
+                <Border StrokeShape="RoundRectangle 8" StrokeThickness="2">
+                    <Image Source="{Binding ImageSource}" MaximumHeightRequest="400"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TextChatMessagePartTemplate" x:DataType="models:TextChatmessagePart">
+            <Label Text="{Binding Text}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="UrlChatMessagePartTemplate" x:DataType="models:UrlChatmessagePart">
+            <Label Text="{Binding Url}" TextDecorations="Underline" TextColor="{StaticResource Hyperlink}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenUrlCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+        </DataTemplate>
+
+        <templateselectors:ChatmessagePartTemplateSelector x:Key="chatmessageTemplateSelector"
+                                          ImageTemplate="{StaticResource ImageChatMessagePartTemplate}"
+                                          TextTemplate="{StaticResource TextChatMessagePartTemplate}"
+                                          UrlTemplate="{StaticResource UrlChatMessagePartTemplate}"/>
+    </ContentView.Resources>
+    
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource BackgroundSecondary}">
+
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" BackgroundColor="{StaticResource Tertiary}" Margin="0,0,0,5">
+            <Label Grid.Column="0" Text="&#xf104;" FontSize="24" TextColor="{StaticResource Primary}" VerticalTextAlignment="Center" 
+                       FontFamily="FontAwesome" Padding="14,0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding UnselectChatCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Label Grid.Column="1" Text="{Binding SelectedChatViewModel.Name}" Padding="4,20" Style="{StaticResource h2}"/>
+        </Grid>
+
+
+        <CollectionView ItemsSource="{Binding SelectedChatViewModel.ChatMessages}"
+                            Grid.Row="1"
+                            Margin="5"
+                            RemainingItemsThreshold="10"
+                            RemainingItemsThresholdReachedCommand="{Binding SelectedChatViewModel.LoadMoreMessagesCommand}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:ChatMessageViewModel">
+                    <Border Stroke="{StaticResource PrimaryBrush}" StrokeThickness="1.5" StrokeShape="RoundRectangle 10" Padding="10" 
+                                Margin="{Binding IsOwn, Converter={x:Static converters:IsOwnToMarginConverter.Instance}}"
+                                BackgroundColor="{StaticResource BackgroundPrimary}">
+
+                        <Grid RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.Row="0" Text="{Binding Chatmessage.DateTime}" HorizontalTextAlignment="End" FontSize="12"/>
+
+
+                            <Label Grid.Row="1" Text="{Binding Chatmessage.From}" FontAttributes="Italic" TextColor="{StaticResource Secondary}"
+                                       IsVisible="{Binding Chatmessage.From, Converter={x:Static converters:AssignedToBoolConverter.Instance}}"/>
+
+                            <CollectionView Grid.Row="2" ItemsSource="{Binding Chatmessage.Parts}" Margin="0,5,0,0"
+                                                ItemTemplate="{StaticResource chatmessageTemplateSelector}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+
+</ContentView>

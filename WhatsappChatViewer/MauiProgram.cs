@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Maui;
 using WhatsappChatViewer.Services;
 using WhatsappChatViewer.ViewModels;
+using WhatsappChatViewer.Views;
 
 namespace WhatsappChatViewer;
 
 public static class MauiProgram
 {
-	public static MauiApp CreateMauiApp()
+	public delegate RawMessageReader RawMessageReaderFactory(string chatPath);
+
+
+    public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
 		builder
@@ -22,12 +26,14 @@ public static class MauiProgram
 				// Start
 				.AddSingleton<MainPage>()
                 .AddSingleton<Lazy<MainPage>>(sp => new(() => sp.GetRequiredService<MainPage>()))
-
-				// Viewmodels
-				.AddSingleton<MainPageViewModel>()
+                // Viewmodels
+                .AddSingleton<MainPageViewModel>()
 				// Services
-				.AddSingleton<ChatImporter>()
+				.AddSingleton<ChatsHandler>()
 				.AddSingleton<UiMessageLogger>()
+				.AddTransient<IAmSelector>()
+				.AddSingleton<ChatMetadataHandler>()
+				.AddSingleton<RawMessageReaderFactory>(chatPath => new RawMessageReader(chatPath))
 				;
 
 		return builder.Build();

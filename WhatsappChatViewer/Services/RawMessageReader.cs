@@ -8,23 +8,24 @@ using WhatsappChatViewer.Models;
 
 namespace WhatsappChatViewer.Services;
 
-public partial class MessageSplitter
+public partial class RawMessageReader
 {
-    private readonly Lazy<IEnumerable<string>> lazyMessageLines;
+    private readonly string chatPath;
 
-    [GeneratedRegex("^\\[(.+?)\\](?: (.+?):)? (.*)")]
+    [GeneratedRegex(@"^\u200e?\[(.+?)\](?: (.+?):)? \u200e?(.*)")]
     private static partial Regex IsNewMessageRegex();
 
-    public MessageSplitter(Lazy<IEnumerable<string>> lazyMessageLines)
+    public RawMessageReader(string chatPath)
 	{
-        this.lazyMessageLines = lazyMessageLines;
+        this.chatPath = chatPath;
     }
 
     public IEnumerable<RawMessage> GetRawMessages()
     {
+        string chatFileName = Path.Combine(chatPath, "_chat.txt");
         RawMessage? lastMessage = null;
 
-        foreach (string line in lazyMessageLines.Value)
+        foreach (string line in File.ReadLines(chatFileName))
         {
             bool isNewMessage = false;
 

@@ -53,6 +53,15 @@
 	  <PackageReference Include="CommunityToolkit.Maui" Version="3.1.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Views\ChatView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\IAmSelectorPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionWhatsappChatViewerHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

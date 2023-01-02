@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               xmlns:viewmodels="clr-namespace:WhatsappChatViewer.ViewModels"
+               x:Class="WhatsappChatViewer.Views.IAmSelectorPopup"
+               x:DataType="viewmodels:IAmSelectorViewModel">
+
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="10" Padding="10">
+        <Label Grid.Row="0" Style="{StaticResource h1}">My name is:</Label>
+        <CollectionView Grid.Row="1" ItemsSource="{Binding PossibleNames}" MaximumHeightRequest="400">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <RadioButton Content="{Binding}" Value="{Binding}" GroupName="PossibleNames" CheckedChanged="RadioButton_CheckedChanged"
+                                 BackgroundColor="{StaticResource BackgroundPrimary}"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Grid.Row="2" Clicked="ButtonFinished_Clicked" Text="OK"/>
+    </Grid>
+    
+</toolkit:Popup>

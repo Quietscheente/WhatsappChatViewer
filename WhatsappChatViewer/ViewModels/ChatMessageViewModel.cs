@@ -9,13 +9,14 @@ namespace WhatsappChatViewer.ViewModels;
 
 public class ChatMessageViewModel
 {
+    private readonly string? iAmName;
 
-    public ChatMessageViewModel(Chatmessage chatmessage)
+    public ChatMessageViewModel(Chatmessage chatmessage, string? iAmName)
 	{
         Chatmessage = chatmessage;
-
+        this.iAmName = iAmName;
     }
 
     public Chatmessage Chatmessage { get; }
-    public bool IsOwn => Chatmessage.From == "Elisabeth";
+    public bool IsOwn => !string.IsNullOrEmpty(iAmName) && Chatmessage.From == iAmName;
 }

@@ -7,27 +7,40 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WhatsappChatViewer.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WhatsappChatViewer.Models;
 
 public partial class Chat
 {
-    private readonly MessageSplitter messageSplitter;
+    private readonly ChatMetadata chatMetadata;
+    private readonly RawMessageReader rawMessageReader;
+    private readonly UiMessageLogger uiMessageLogger;
 
-    public string Name { get; }
-    public string Directory { get; }
+    public string Name => chatMetadata.Name;
+    public string? IAmName => chatMetadata.IAmName;
 
-    public Chat(string name, string directory, MessageSplitter messageSplitter)
+    public Chat(ChatMetadata chatMetadata, RawMessageReader rawMessageReader, UiMessageLogger uiMessageLogger)
     {
-        Name = name;
-        Directory = directory;
-        this.messageSplitter = messageSplitter;
+        this.chatMetadata = chatMetadata;
+        this.rawMessageReader = rawMessageReader;
+        this.uiMessageLogger = uiMessageLogger;
+    }
+
+    public IEnumerable<string> Authors() => rawMessageReader.GetRawMessages().Where(msg => msg.From is not null).Select(msg => msg.From!).Distinct().Order();
+
+    public async Task SelectIAmName(IAmSelector iAmSelector)
+    {
+        var authors = Authors();
+        string? iAmName = await iAmSelector.GetIAmName(authors);
+        iAmName ??= string.Empty;
+
+        chatMetadata.IAmName = iAmName;
+        chatMetadata.ChatMetadataHandler.Save();
     }
 
     public IEnumerable<Chatmessage> Messages()
     {
-        foreach (var rawMessage in messageSplitter.GetRawMessages().Reverse())
+        foreach (var rawMessage in rawMessageReader.GetRawMessages().Reverse())
         {
             var chatMessage = new Chatmessage(rawMessage.DateTime, rawMessage.From);
 
@@ -39,10 +52,10 @@ public partial class Chat
                 if (matchAttachment.Success)
                 {
                     string filename = matchAttachment.Groups[1].Value;
-                    if (Path.GetExtension(filename) is ".jpg" or ".webp" && File.Exists(Path.Combine(Directory, filename)))
+                    if (Path.GetExtension(filename) is ".jpg" or ".webp" && File.Exists(Path.Combine(chatMetadata.Directory, filename)))
                     {
                         isImage = true;
-                        ImageSource imageSource = ImageSource.FromFile(Path.Combine(Directory, filename));
+                        ImageSource imageSource = ImageSource.FromFile(Path.Combine(chatMetadata.Directory, filename));
                         chatMessage.Parts.Add(new ImageChatmessagePart(imageSource));
                     }
                 }
@@ -60,7 +73,7 @@ public partial class Chat
                         if (i % 2 == 0)
                             chatMessage.Parts.Add(new TextChatmessagePart(chunks[i].Trim()));
                         else
-                            chatMessage.Parts.Add(new UrlChatmessagePart(chunks[i].Trim()));
+                            chatMessage.Parts.Add(new UrlChatmessagePart(chunks[i].Trim(), uiMessageLogger));
                     }
                 }
             }

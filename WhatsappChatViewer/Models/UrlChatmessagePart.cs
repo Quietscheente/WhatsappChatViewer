@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WhatsappChatViewer.Services;
 
 namespace WhatsappChatViewer.Models;
 
 public class UrlChatmessagePart : ChatmessagePart
 {
+    private readonly UiMessageLogger uiMessageLogger;
+
     public Command OpenUrlCommand { get; }
-    public UrlChatmessagePart(string url)
+    public UrlChatmessagePart(string url, UiMessageLogger uiMessageLogger)
     {
         Url = url;
-
+        this.uiMessageLogger = uiMessageLogger;
         OpenUrlCommand = new(OpenUrl);
     }
 
@@ -27,7 +30,7 @@ public class UrlChatmessagePart : ChatmessagePart
         }
         catch (Exception ex)
         {
-            
+            uiMessageLogger.ShowMessage(ex.Message, UiMessageType.Error);
         }
     }
 }
