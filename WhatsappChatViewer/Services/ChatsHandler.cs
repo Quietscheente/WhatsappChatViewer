@@ -48,7 +48,7 @@ public class ChatsHandler
             throw new ExtractZipException(ex.Message);
         }
 
-        RawMessageReader messageReader = rawMessageReaderFactory(chatPath);
+        RawMessageReader messageReader = rawMessageReaderFactory(ChatFilePath(chatPath));
         ChatList.Add(new(meta, messageReader, uiMessageLogger));
     }
 
@@ -69,9 +69,7 @@ public class ChatsHandler
         {
             try
             {
-                string cacheDir = FileSystem.Current.CacheDirectory;
-                Directory.GetDirectories(cacheDir).ToList()
-                    .ForEach(d => Directory.Delete(d, true));
+                File.Delete(zipFilePath);
             }
             catch
             { }
@@ -95,7 +93,7 @@ public class ChatsHandler
 
         foreach (var meta in chatMetadataHandler.MetadataList)
         {
-            RawMessageReader messageReader = rawMessageReaderFactory(meta.Directory);
+            RawMessageReader messageReader = rawMessageReaderFactory(ChatFilePath(meta.Directory));
             _chatList.Add(new Chat(meta, messageReader, uiMessageLogger));
         }
     }
@@ -106,6 +104,8 @@ public class ChatsHandler
         this.chatMetadataHandler = chatMetadataHandler;
         this.rawMessageReaderFactory = rawMessageReaderFactory;
     }
+
+    public static string ChatFilePath(string chatPath) => Path.Combine(chatPath, "_chat.txt");
 
     private static async Task ExtractZipAsync(string zipFilePath, string destPath)
     {

@@ -6,17 +6,21 @@
                x:Class="WhatsappChatViewer.Views.IAmSelectorPopup"
                x:DataType="viewmodels:IAmSelectorViewModel">
 
-    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="10" Padding="10">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="10" Padding="10">
         <Label Grid.Row="0" Style="{StaticResource h2}" Margin="0,5,0,10">My name is:</Label>
-        <CollectionView Grid.Row="1" ItemsSource="{Binding PossibleNames}" MaximumHeightRequest="400">
+        
+        <RadioButton Grid.Row="1" Content="&lt;none&gt;" Value="" GroupName="PossibleNames" CheckedChanged="RadioButton_CheckedChanged"
+                     BackgroundColor="{StaticResource BackgroundPrimary}" TextColor="{StaticResource Primary}" VerticalOptions="Center"/>
+        
+        <CollectionView Grid.Row="2" ItemsSource="{Binding PossibleNames}" MaximumHeightRequest="400">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="x:String">
                     <RadioButton Content="{Binding}" Value="{Binding}" GroupName="PossibleNames" CheckedChanged="RadioButton_CheckedChanged"
-                                 BackgroundColor="{StaticResource BackgroundPrimary}"/>
+                                 BackgroundColor="{StaticResource BackgroundPrimary}" TextColor="{StaticResource Primary}"/>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <Button Grid.Row="2" Clicked="ButtonFinished_Clicked" Text="OK"/>
+        <Button Grid.Row="3" Clicked="ButtonFinished_Clicked" Text="OK"/>
     </Grid>
     
 </toolkit:Popup>

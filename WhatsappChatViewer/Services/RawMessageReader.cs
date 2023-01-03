@@ -10,22 +10,21 @@ namespace WhatsappChatViewer.Services;
 
 public partial class RawMessageReader
 {
-    private readonly string chatPath;
+    private readonly string chatFilePath;
 
     [GeneratedRegex(@"^\u200e?\[(.+?)\](?: (.+?):)? \u200e?(.*)")]
     private static partial Regex IsNewMessageRegex();
 
-    public RawMessageReader(string chatPath)
+    public RawMessageReader(string chatFilePath)
 	{
-        this.chatPath = chatPath;
+        this.chatFilePath = chatFilePath;
     }
 
     public IEnumerable<RawMessage> GetRawMessages()
     {
-        string chatFileName = Path.Combine(chatPath, "_chat.txt");
         RawMessage? lastMessage = null;
 
-        foreach (string line in File.ReadLines(chatFileName))
+        foreach (string line in File.ReadLines(chatFilePath))
         {
             bool isNewMessage = false;
 

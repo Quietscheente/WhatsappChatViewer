@@ -33,10 +33,12 @@ public partial class Chat
     {
         var authors = Authors();
         string? iAmName = await iAmSelector.GetIAmName(authors);
-        iAmName ??= string.Empty;
 
-        chatMetadata.IAmName = iAmName;
-        chatMetadata.ChatMetadataHandler.Save();
+        if (iAmName is not null)
+        {
+            chatMetadata.IAmName = iAmName;
+            chatMetadata.ChatMetadataHandler.Save();
+        }
     }
 
     public IEnumerable<Chatmessage> Messages()

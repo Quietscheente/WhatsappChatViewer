@@ -52,6 +52,11 @@ public class ChatMetadataHandler
         try
         {
             _metadataList = JsonSerializer.Deserialize<List<ChatMetadata>>(json)!;
+
+            // delete broken meta data (no chat in file system)
+            _metadataList.Where(meta => !Directory.Exists(meta.Directory) || !File.Exists(ChatsHandler.ChatFilePath(meta.Directory))).ToList()
+                .ForEach(brokenMeta => _metadataList.Remove(brokenMeta));
+
             foreach (var meta in _metadataList)
                 meta.ChatMetadataHandler = this;
         }
