@@ -7,6 +7,9 @@
 
     <x:String x:Key="IconImportChat">&#xf234;</x:String>
     <x:String x:Key="IconDeleteChat">&#xf2ed;</x:String>
+    <x:String x:Key="IconBack">&#xf104;</x:String>
+    <x:String x:Key="IconPlayAudio">&#xf04b;</x:String>
+    <x:String x:Key="IconPlayVideo">&#xf03d;</x:String>
 
     <Style x:Key="h1" TargetType="Label">
         <Setter Property="FontSize" Value="24"/>
@@ -16,7 +19,7 @@
 
     <Style x:Key="h2" TargetType="Label">
         <Setter Property="FontSize" Value="19"/>
-        <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+        <Setter Property="TextColor" Value="{StaticResource Secondary}"/>
     </Style>
 
     <Style TargetType="Label">

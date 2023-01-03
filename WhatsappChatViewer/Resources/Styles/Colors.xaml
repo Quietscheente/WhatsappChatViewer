@@ -15,5 +15,6 @@
     <Color x:Key="Hyperlink">#2B0B98</Color>
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
 
 </ResourceDictionary>

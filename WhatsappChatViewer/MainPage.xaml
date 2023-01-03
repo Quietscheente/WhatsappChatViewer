@@ -8,15 +8,15 @@
              x:Class="WhatsappChatViewer.MainPage"
              x:DataType="viewmodels:MainPageViewModel">
 
-    <!--#region chat list-->
     <Grid BackgroundColor="{StaticResource BackgroundSecondary}">
         <Grid RowDefinitions="Auto,*">
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Background="{StaticResource Tertiary}" Padding="20,10">
                 <Label Grid.Column="0" Style="{StaticResource h1}">Chats</Label>
-                <Button Grid.Column="1" FontFamily="FontAwesome" Text="{StaticResource IconImportChat}" FontSize="20" Command="{Binding ImportChatCommand}"/>
+                <Button Grid.Column="1" IsVisible="{Binding IsNotImportingChat}" FontFamily="FontAwesome" Text="{StaticResource IconImportChat}" FontSize="20" Command="{Binding ImportChatCommand}"/>
                 <ActivityIndicator Grid.Column="1" IsRunning="{Binding IsImportingChat}" IsVisible="{Binding IsImportingChat}"/>
             </Grid>
 
+            <!--#region chat list-->
             <CollectionView Grid.Row="1" ItemsSource="{Binding ChatViewModels}" Margin="10">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="viewmodels:ChatViewModel">
@@ -44,8 +44,8 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <!--#endregion-->
         </Grid>
-        <!--#endregion-->
 
         <!--#region selected chat-->
         <views:ChatView IsVisible="{Binding SelectedChatViewModel, Converter={x:Static converters:AssignedToBoolConverter.Instance}}"/>

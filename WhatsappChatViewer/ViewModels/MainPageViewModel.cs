@@ -50,12 +50,13 @@ public class MainPageViewModel : INotifyPropertyChanged
     public ICommand UnselectChatCommand { get; }
 
     public bool IsImportingChat { get; private set; } = false;
+    public bool IsNotImportingChat => !IsImportingChat;
 
     public ChatViewModel? SelectedChatViewModel { get; private set; } = null;
 
     public MainPageViewModel(ChatsHandler chatsHandler, UiMessageLogger uiMessageLogger, IAmSelector iAmSelector, ChatMetadataHandler metadataHandler)
     {
-        ImportChatCommand = new Command(async () => await ImportChatAsync(), () => !IsImportingChat);
+        ImportChatCommand = new Command(async () => await ImportChatAsync(), () => IsNotImportingChat);
         SelectChatCommand = new Command(async (object obj) => await SelectChat(obj));
         UnselectChatCommand = new Command(UnselectChat);
 
@@ -95,7 +96,19 @@ public class MainPageViewModel : INotifyPropertyChanged
 
     private async Task ImportChatAsync()
     {
-        var result = await FilePicker.PickAsync();
+        var pickOptions = new PickOptions()
+        {
+            PickerTitle = "Select chat zip file",
+            FileTypes = new FilePickerFileType(
+                new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.Android, new[] { "application/zip" } }, // MIME type
+                    { DevicePlatform.WinUI, new[] { ".zip" } } // file extension                    
+                }
+            )
+        };
+
+        var result = await FilePicker.PickAsync(pickOptions);
 
         if (result != null)
         {
@@ -107,6 +120,7 @@ public class MainPageViewModel : INotifyPropertyChanged
 
             IsImportingChat = true;
             PropertyChanged?.Invoke(this, new(nameof(IsImportingChat)));
+            PropertyChanged?.Invoke(this, new(nameof(IsNotImportingChat)));
 
             uiMessageLogger.ShowMessage($"Importing {result.FileName}...", UiMessageType.Info, 1000);
 
@@ -134,6 +148,7 @@ public class MainPageViewModel : INotifyPropertyChanged
             {
                 IsImportingChat = false;
                 PropertyChanged?.Invoke(this, new(nameof(IsImportingChat)));
+                PropertyChanged?.Invoke(this, new(nameof(IsNotImportingChat)));
             }
         }
     }

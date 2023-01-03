@@ -4,12 +4,13 @@
              xmlns:viewmodels="clr-namespace:WhatsappChatViewer.ViewModels"
              xmlns:converters="clr-namespace:WhatsappChatViewer.ValueConverters"
              xmlns:models="clr-namespace:WhatsappChatViewer.Models"
+             xmlns:messageparts="clr-namespace:WhatsappChatViewer.Models.MessageParts"
              xmlns:templateselectors="clr-namespace:WhatsappChatViewer.DataTemplateSelectors"
              x:Class="WhatsappChatViewer.Views.ChatView"
              x:DataType="viewmodels:MainPageViewModel">
 
     <ContentView.Resources>
-        <DataTemplate x:Key="ImageChatMessagePartTemplate" x:DataType="models:ImageChatmessagePart">
+        <DataTemplate x:Key="ImageChatMessagePartTemplate" x:DataType="messageparts:ImageChatmessagePart">
             <Grid HorizontalOptions="Center">
                 <Border StrokeShape="RoundRectangle 8" StrokeThickness="2">
                     <Image Source="{Binding ImageSource}" MaximumHeightRequest="400"/>
@@ -17,11 +18,39 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="TextChatMessagePartTemplate" x:DataType="models:TextChatmessagePart">
+        <DataTemplate x:Key="TextChatMessagePartTemplate" x:DataType="messageparts:TextChatmessagePart">
             <Label Text="{Binding Text}"/>
         </DataTemplate>
 
-        <DataTemplate x:Key="UrlChatMessagePartTemplate" x:DataType="models:UrlChatmessagePart">
+        <DataTemplate x:Key="AudioChatMessagePartTemplate" x:DataType="messageparts:AudioChatmessagePart">
+            <Border StrokeShape="RoundRectangle 6" BackgroundColor="{StaticResource BackgroundPrimary}" Stroke="{StaticResource TertiaryBrush}" StrokeThickness="2" Padding="15">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Grid.Column="0" IsVisible="{Binding IsNotLoadingAudioPlayer}" TextColor="{StaticResource Primary}" FontSize="25" Text="{StaticResource IconPlayAudio}" FontFamily="FontAwesome"/>
+                    <ActivityIndicator Grid.Column="0" HeightRequest="20" WidthRequest="20" IsVisible="{Binding IsLoadingAudioPlayer}" IsRunning="{Binding IsLoadingAudioPlayer}"/>
+                    <Label Grid.Column="1" Text="Play Audio" VerticalTextAlignment="Center" Margin="20,0,0,0"/>
+                </Grid>
+                
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PlayAudioCommand}"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VideoChatMessagePartTemplate" x:DataType="messageparts:VideoChatmessagePart">
+            <Border StrokeShape="RoundRectangle 6" BackgroundColor="{StaticResource BackgroundPrimary}" Stroke="{StaticResource TertiaryBrush}" StrokeThickness="2" Padding="15">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Label Grid.Column="0" IsVisible="{Binding IsNotLoadingVideoPlayer}" TextColor="{StaticResource Primary}" FontSize="25" Text="{StaticResource IconPlayVideo}" FontFamily="FontAwesome"/>
+                    <ActivityIndicator Grid.Column="0" HeightRequest="20" WidthRequest="20" IsVisible="{Binding IsLoadingVideoPlayer}" IsRunning="{Binding IsLoadingVideoPlayer}"/>
+                    <Label Grid.Column="1" Text="Play Video" VerticalTextAlignment="Center" Margin="20,0,0,0"/>
+                </Grid>
+
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PlayVideoCommand}"/>
+                </Border.GestureRecognizers>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="UrlChatMessagePartTemplate" x:DataType="messageparts:UrlChatmessagePart">
             <Label Text="{Binding Url}" TextDecorations="Underline" TextColor="{StaticResource Hyperlink}">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenUrlCommand}"/>
@@ -30,22 +59,24 @@
         </DataTemplate>
 
         <templateselectors:ChatmessagePartTemplateSelector x:Key="chatmessageTemplateSelector"
-                                          ImageTemplate="{StaticResource ImageChatMessagePartTemplate}"
-                                          TextTemplate="{StaticResource TextChatMessagePartTemplate}"
-                                          UrlTemplate="{StaticResource UrlChatMessagePartTemplate}"/>
+                                                           ImageTemplate="{StaticResource ImageChatMessagePartTemplate}"
+                                                           TextTemplate="{StaticResource TextChatMessagePartTemplate}"
+                                                           UrlTemplate="{StaticResource UrlChatMessagePartTemplate}"
+                                                           AudioTemplate="{StaticResource AudioChatMessagePartTemplate}"
+                                                           VideoTemplate="{StaticResource VideoChatMessagePartTemplate}"/>
     </ContentView.Resources>
     
     <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource BackgroundSecondary}">
 
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" BackgroundColor="{StaticResource Tertiary}" Margin="0,0,0,5">
-            <Label Grid.Column="0" Text="&#xf104;" FontSize="24" TextColor="{StaticResource Primary}" VerticalTextAlignment="Center" 
+            <Label Grid.Column="0" Text="{StaticResource IconBack}" FontSize="24" TextColor="{StaticResource Primary}" VerticalTextAlignment="Center" 
                        FontFamily="FontAwesome" Padding="14,0">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding UnselectChatCommand}"/>
                 </Label.GestureRecognizers>
             </Label>
 
-            <Label Grid.Column="1" Text="{Binding SelectedChatViewModel.Name}" Padding="4,20" Style="{StaticResource h2}"/>
+            <Label Grid.Column="1" Text="{Binding SelectedChatViewModel.Name}" Padding="4,10" Style="{StaticResource h1}"/>
         </Grid>
 
 

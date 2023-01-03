@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WhatsappChatViewer.Models.MessageParts;
 using WhatsappChatViewer.Services;
 
 namespace WhatsappChatViewer.Models;
@@ -46,7 +47,7 @@ public partial class Chat
 
             foreach (string rawMessageLine in rawMessage.Lines)
             {
-                bool isImage = false;
+                bool isFileAttachment = false;
 
                 var matchAttachment = Regex.Match(rawMessageLine, @"<(?:.+?): (.+)>");
                 if (matchAttachment.Success)
@@ -54,13 +55,23 @@ public partial class Chat
                     string filename = matchAttachment.Groups[1].Value;
                     if (Path.GetExtension(filename) is ".jpg" or ".webp" && File.Exists(Path.Combine(chatMetadata.Directory, filename)))
                     {
-                        isImage = true;
+                        isFileAttachment = true;
                         ImageSource imageSource = ImageSource.FromFile(Path.Combine(chatMetadata.Directory, filename));
                         chatMessage.Parts.Add(new ImageChatmessagePart(imageSource));
                     }
+                    else if (filename.Contains("-AUDIO-") && File.Exists(Path.Combine(chatMetadata.Directory, filename)))
+                    {
+                        isFileAttachment = true;
+                        chatMessage.Parts.Add(new AudioChatmessagePart(Path.Combine(chatMetadata.Directory, filename)));
+                    }
+                    else if (filename.Contains("-VIDEO-") && File.Exists(Path.Combine(chatMetadata.Directory, filename)))
+                    {
+                        isFileAttachment = true;
+                        chatMessage.Parts.Add(new VideoChatmessagePart(Path.Combine(chatMetadata.Directory, filename)));
+                    }
                 }
 
-                if (!isImage)
+                if (!isFileAttachment)
                 {
                     var urlPattern = IsUrlRegex();
                     var chunks = urlPattern.Split(rawMessageLine);
